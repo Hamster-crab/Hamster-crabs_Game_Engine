@@ -1,5 +1,31 @@
 #include <raylib.h>
 #include <fonts/nomalJPFonts.h>
+#include <func.h>
+
+int width;
+int height;
+
+std::string windowType = "title"
+
+void DrawTitle(Font nomalJPFonts) {
+    Vector2 mousePos = GetMousePosition();
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    if (mousePos.x >= width/2-60 && mousePos.x <= width/2-60+90 && mousePos.y >= height/1.5 && mousePos.y <= height/1.5+30) {
+        DrawRectangleLines(width/2-60, height/1.5, 90, 30, RED);
+    }
+    if (mousePos.x >= width/2-50 && mousePos.x <= width/2-50+60 && mousePos.y >= height/1.2 && mousePos.y <= height/1.2+30) {
+        DrawRectangleLines(width/2-50, height/1.2, 60, 30, RED);
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) CloseWindow();
+    }
+
+    DrawTextEx(nomalJPFonts, "はじめる", (Vector2){width/2-60, height/1.5}, 30, 2, BLACK);
+    DrawTextEx(nomalJPFonts, "とじる", (Vector2){width/2-50, height/1.2}, 30, 2, BLACK);
+
+    EndDrawing();
+}
 
 int main(void)
 {
@@ -9,33 +35,22 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 500;
 
-    // ウィンドウを作成し、サイズ変更可能に設定
     InitWindow(screenWidth, screenHeight, "");
 
-    int fontCodepoints[2027048];
-    int charsCount = 30;
-
-    Font nomalJPFonts = LoadFontFromMemory(".ttf",
-                                           DotGothic16_Regular_ttf,
-                                           DotGothic16_Regular_ttf_len,
-                                           300,
-                                           fontCodepoints,
-                                           charsCount);
+    Font nomalJPFonts = CreateUniversalJPFont(30);
 
     // FPSを設定 (オプション)
     SetTargetFPS(60);
 
     // ゲームループ
-    while (!WindowShouldClose())    // ESCキーが押されるか、クローズボタンがクリックされるまで
+    while (!WindowShouldClose())
     {
-        // 描画開始
-        BeginDrawing();
+        width = GetScreenWidth();
+        height = GetScreenHeight();
 
-        ClearBackground(RAYWHITE); // 背景を白でクリア
-        DrawTextEx(nomalJPFonts, "こんにちは、世界！", (Vector2){ 50, 50 }, 30, 2, BLACK);
-
-        // 描画終了
-        EndDrawing();
+        if (windowType == "title") {
+            DrawTitle(nomalJPFonts);
+        }
     }
 
     // クリーンアップ

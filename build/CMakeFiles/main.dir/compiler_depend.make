@@ -3,6 +3,7 @@
 
 CMakeFiles/main.dir/src/main.cpp.o: /home/kitanohideaki/git/horror/src/main.cpp \
   /home/kitanohideaki/git/horror/include/fonts/nomalJPFonts.h \
+  /home/kitanohideaki/git/horror/include/func.h \
   /usr/include/raylib.h \
   /usr/include/stdc-predef.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/stdarg.h
@@ -39,6 +40,8 @@ main: /usr/lib/Scrt1.o \
 
 /usr/lib/libgcc_s.so:
 
+/usr/lib/libc.so:
+
 /usr/lib/libm.so.6:
 
 /home/kitanohideaki/git/horror/src/main.cpp:
@@ -46,6 +49,10 @@ main: /usr/lib/Scrt1.o \
 /home/kitanohideaki/git/horror/include/fonts/nomalJPFonts.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/crtbeginS.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/stdarg.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/crtendS.o:
 
 /usr/lib/ld-linux-x86-64.so.2:
 
@@ -65,10 +72,6 @@ CMakeFiles/main.dir/src/main.cpp.o:
 
 /usr/lib/crtn.o:
 
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/stdarg.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/crtendS.o:
+/home/kitanohideaki/git/horror/include/func.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/libgcc.a:
-
-/usr/lib/libc.so:
