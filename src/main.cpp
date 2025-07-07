@@ -1,11 +1,12 @@
 #include <raylib.h>
 #include <fonts/nomalJPFonts.h>
 #include <func.h>
+#include <string>
 
 int width;
 int height;
 
-std::string windowType = "title"
+std::string windowType = "title";
 
 void DrawTitle(Font nomalJPFonts) {
     Vector2 mousePos = GetMousePosition();
