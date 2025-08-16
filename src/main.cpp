@@ -27,7 +27,7 @@ RenderTexture2D target;
 Camera2D camera_title;
 Camera2D camera_main;
 
-Font font_DotGothic;
+Font font_Japanese;
 
 bool bool_force_exit;
 
@@ -63,7 +63,7 @@ public:
 
     void Draw() const {
         DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
-        DrawTextEx(font_DotGothic, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
+        DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
     }
 
     void Reset() {
@@ -149,9 +149,9 @@ void function_function_title() {
     BeginTextureMode(target);
     ClearBackground({0, 0, 0, 255});
     BeginMode2D(camera_title);
-    DrawTextEx(font_DotGothic, "Game", {320.0f, 350.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 345
-    DrawTextEx(font_DotGothic, "Config", {320.0f, 410.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 405
-    DrawTextEx(font_DotGothic, "Exit", {320.0f, 470.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 465
+    DrawTextEx(font_Japanese, "Game", {320.0f, 350.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 345
+    DrawTextEx(font_Japanese, "Config", {320.0f, 410.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 405
+    DrawTextEx(font_Japanese, "Exit", {320.0f, 470.0f}, 50.0f, 3.0f, {255, 255, 255, 255}); // 465
     DrawRectangleLinesEx(rect_title_mouse, 5.0f, {255, 255, 255, 255});
     EndMode2D();
     EndTextureMode();
@@ -264,7 +264,7 @@ int main() {
 
     bool_force_exit = false;
 
-    font_DotGothic = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
+    font_Japanese = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
 
     path_save = "../data/save.hc";
     function_loadGame();
@@ -329,7 +329,7 @@ int main() {
 
     UnloadRenderTexture(target);
 
-    UnloadFont(font_DotGothic);
+    UnloadFont(font_Japanese);
 
     CloseWindow();
 
