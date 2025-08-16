@@ -56,6 +56,7 @@ public:
     }
 
     void Draw() const {
+        DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
         DrawTextEx(font_DotGothic, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
     }
 
@@ -190,7 +191,6 @@ void function_main() {
 
     EndMode2D();
 
-    DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
     twText_1.Draw();
 
     EndTextureMode();
@@ -266,8 +266,8 @@ int main() {
         ClearBackground({0, 0, 0, 255});
         DrawTexturePro(target.texture, src, dest, { 0, 0 }, 0.0f, WHITE);
         DrawFPS(0, 0);
-        DrawText(TextFormat("window_width: %.2f", GetScreenWidth), 0, 30, 20, {255, 255, 255, 255});
-        DrawText(TextFormat("window_height: %.2f", GetScreenHeight), 0, 50, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("window_width: %d", GetScreenWidth), 0, 30, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("window_height: %d", GetScreenHeight), 0, 50, 20, {255, 255, 255, 255});
 
         if (number_main_player_move_meter) {
             DrawRectangle(400, 420, number_main_player_move_dash/15, 2, {255, 255, 255, 255});
