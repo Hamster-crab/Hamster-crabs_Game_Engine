@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/kitanohideaki/git/horror/src -I/home/kitanohideaki/git/horror/include
+CXX_INCLUDES = -I/home/kitanohideaki/git/my_raylib_2d_example/src -I/home/kitanohideaki/git/my_raylib_2d_example/include
 
 CXX_FLAGS = -std=c++17 -I/usr/include
 

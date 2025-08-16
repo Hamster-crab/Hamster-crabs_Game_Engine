@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/home/kitanohideaki/git/horror/build/cmake_install.cmake"
+		"/home/kitanohideaki/git/my_raylib_2d_example/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }
