@@ -317,6 +317,7 @@ int main() {
         DrawText(TextFormat("window_height: %d", GetScreenHeight()), 0, 50, 20, {255, 255, 255, 255});
         DrawText(TextFormat("player_x: %.3f", Vec2_main_player.x), 0, 70, 20, {255, 255, 255, 255});
         DrawText(TextFormat("player_y: %.3f", Vec2_main_player.y), 0, 90, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("direction: %s", string_main_player_move_direction.c_str()), 0, 110, 20, {255, 255, 255, 255});
 
         if (number_main_player_move_meter) {
             DrawRectangle(400, 420, number_main_player_move_dash/15, 2, {255, 255, 255, 255});
