@@ -1,6 +1,8 @@
 #include "raylib.h"
 #include <cmath>
 #include <string>
+#include <filesystem>
+#include <fstream>
 
 int screenWidth;
 int screenHeight;
@@ -26,6 +28,10 @@ Camera2D camera_title;
 Camera2D camera_main;
 
 Font font_DotGothic;
+
+bool bool_force_exit;
+
+std::filesystem::path path_save;
 
 const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
 const Rectangle rect_main_map_obj_2 = {-300, -300, 5, 1080};
@@ -67,7 +73,7 @@ public:
     }
 };
 
-Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.", 130, 430, 0.005f, 40, {255, 255, 255, 255});
+Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
 
 void BounceCollision(Rectangle wall) {
     Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
@@ -96,7 +102,35 @@ void BounceCollision(Rectangle wall) {
     }
 }
 
-void function_title() {
+void loadGame() {
+    std::ifstream file(path_save);
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string key;
+        if (std::getline(iss, key, '=')) {
+            std::string valueStr;
+            if (std::getline(iss, valueStr)) {
+                int value = std::stoi(valueStr);
+                if (key == "x") Vec2_main_player.x = value;
+                else if (key == "y") Vec2_main_player.y = value;
+            }
+        }
+    }
+}
+
+void function_saveGame() {
+    std::ofstream file(path_save);
+    if (!file) {
+        throw std::runtime_error("Failed to open file for writing: " + path_save.string());
+    }
+
+    file << "x=" << Vec2_main_player.x << '\n';
+    file << "y=" << Vec2_main_player.y << '\n';
+}
+
+void function_function_title() {
     if (rect_title_mouse.y <= 345) {
         if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)) rect_title_mouse.y = 405;
 
@@ -109,7 +143,7 @@ void function_title() {
     } else if (rect_title_mouse.y >= 465) {
         if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) rect_title_mouse.y = 405;
 
-        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) CloseWindow();
+        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) bool_force_exit = true;
     }
 
     BeginTextureMode(target);
@@ -199,7 +233,6 @@ void function_main() {
 int main() {
     SetTraceLogLevel(LOG_ALL);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    SetExitKey(KEY_NULL);
 
     screenWidth = 800;
     screenHeight = 600;
@@ -211,6 +244,7 @@ int main() {
     string_main_player_move_direction = "down";
 
     InitWindow(screenWidth, screenHeight, "Hamster-crab's Game engine");
+    SetExitKey(KEY_NULL);
 
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
@@ -228,18 +262,32 @@ int main() {
     rect_title_mouse = {295, 345, 205, 60};
     Vec2_main_player = {0, 0};
 
+    bool_force_exit = false;
+
     font_DotGothic = LoadFont("../fonts/DotGothic16/DotGothic16-Regular.ttf");
+
+    path_save = "../data/save.hc";
+    loadGame();
 
     SetTargetFPS(120);
 
     while (!WindowShouldClose())
     {
+        if (bool_force_exit) {
+            break;
+        }
+
         switch (number_title) {
             case 1:
-                function_title();
+                function_function_title();
                 break;
 
             case 2:
+                if (IsKeyPressed(KEY_ESCAPE)) {
+                    function_saveGame();
+                    bool_force_exit = true;
+                }
+
                 function_main();
                 break;
         }
@@ -268,6 +316,8 @@ int main() {
         DrawFPS(0, 0);
         DrawText(TextFormat("window_width: %d", GetScreenWidth()), 0, 30, 20, {255, 255, 255, 255});
         DrawText(TextFormat("window_height: %d", GetScreenHeight()), 0, 50, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("player_x: %.3f", Vec2_main_player.x), 0, 70, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("player_y: %.3f", Vec2_main_player.y), 0, 90, 20, {255, 255, 255, 255});
 
         if (number_main_player_move_meter) {
             DrawRectangle(400, 420, number_main_player_move_dash/15, 2, {255, 255, 255, 255});
