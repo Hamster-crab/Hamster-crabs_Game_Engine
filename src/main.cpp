@@ -264,7 +264,7 @@ int main() {
 
     bool_force_exit = false;
 
-    font_DotGothic = LoadFont("../fonts/DotGothic16/DotGothic16-Regular.ttf");
+    font_DotGothic = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
 
     path_save = "../data/save.hc";
     function_loadGame();
