@@ -266,8 +266,8 @@ int main() {
         ClearBackground({0, 0, 0, 255});
         DrawTexturePro(target.texture, src, dest, { 0, 0 }, 0.0f, WHITE);
         DrawFPS(0, 0);
-        DrawText(TextFormat("window_width: %d", GetScreenWidth), 0, 30, 20, {255, 255, 255, 255});
-        DrawText(TextFormat("window_height: %d", GetScreenHeight), 0, 50, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("window_width: %d", GetScreenWidth()), 0, 30, 20, {255, 255, 255, 255});
+        DrawText(TextFormat("window_height: %d", GetScreenHeight()), 0, 50, 20, {255, 255, 255, 255});
 
         if (number_main_player_move_meter) {
             DrawRectangle(400, 420, number_main_player_move_dash/15, 2, {255, 255, 255, 255});
