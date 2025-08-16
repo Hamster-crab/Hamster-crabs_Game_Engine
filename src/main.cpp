@@ -73,7 +73,7 @@ public:
     }
 };
 
-Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
+Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
 
 void BounceCollision(Rectangle wall) {
     Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
@@ -102,7 +102,7 @@ void BounceCollision(Rectangle wall) {
     }
 }
 
-void loadGame() {
+void function_loadGame() {
     std::ifstream file(path_save);
     std::string line;
 
@@ -267,7 +267,7 @@ int main() {
     font_DotGothic = LoadFont("../fonts/DotGothic16/DotGothic16-Regular.ttf");
 
     path_save = "../data/save.hc";
-    loadGame();
+    function_loadGame();
 
     SetTargetFPS(120);
 
@@ -284,7 +284,6 @@ int main() {
 
             case 2:
                 if (IsKeyPressed(KEY_ESCAPE)) {
-                    function_saveGame();
                     bool_force_exit = true;
                 }
 
