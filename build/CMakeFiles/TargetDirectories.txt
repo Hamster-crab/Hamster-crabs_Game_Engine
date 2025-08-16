@@ -1,3 +1,0 @@
-/home/kitanohideaki/git/my_raylib_2d_example/build/CMakeFiles/main.dir
-/home/kitanohideaki/git/my_raylib_2d_example/build/CMakeFiles/edit_cache.dir
-/home/kitanohideaki/git/my_raylib_2d_example/build/CMakeFiles/rebuild_cache.dir
