@@ -265,6 +265,7 @@ int main() {
     bool_force_exit = false;
 
     font_Japanese = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
+    SetTextureFilter(font_Japanese.texture, TEXTURE_FILTER_BILINEAR);
 
     path_save = "../data/save.hc";
     function_loadGame();
