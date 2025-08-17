@@ -1,8 +1,12 @@
 #include "raylib.h"
+# include <iostream>
 #include <cmath>
 #include <string>
 #include <filesystem>
 #include <fstream>
+#include <random>
+
+std::mt19937 rng((unsigned)time(NULL));
 
 int screenWidth;
 int screenHeight;
@@ -33,102 +37,130 @@ bool bool_force_exit;
 
 std::filesystem::path path_save;
 
+float music_volume_min;
+
 const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
 const Rectangle rect_main_map_obj_2 = {-300, -300, 5, 1080};
 const Rectangle rect_main_map_obj_3 = {-300, 780, 1280, 5};
 const Rectangle rect_main_map_obj_4 = {980, -300, 5, 1080};
 
-class Typewriter {
-public:
-    std::string fullText;
-    std::string displayText;
-    float timer = 0.0f;
-    int index = 0;
-    float speed = 0.05f;
-    int x = 0, y = 0;
-    int fontSize = 20;
-    Color color = BLACK;
+namespace HamsterCrab {
+    class Typewriter {
+    public:
+        std::string fullText;
+        std::string displayText;
+        float timer = 0.0f;
+        int index = 0;
+        float speed = 0.05f;
+        int x = 0, y = 0;
+        int fontSize = 20;
+        Color color = BLACK;
 
-    Typewriter(std::string text, int px, int py, float spd = 0.05f, int size = 20, Color col = BLACK)
-    : fullText(text), x(px), y(py), speed(spd), fontSize(size), color(col) {}
+        Typewriter(std::string text, int px, int py, float spd = 0.05f, int size = 20, Color col = BLACK)
+        : fullText(text), x(px), y(py), speed(spd), fontSize(size), color(col) {}
 
-    void Update() {
-        timer += GetFrameTime();
-        if (index < (int)fullText.size() && timer >= speed) {
-            displayText += fullText[index];
-            index++;
+        void Update() {
+            timer += GetFrameTime();
+            if (index < (int)fullText.size() && timer >= speed) {
+                displayText += fullText[index];
+                index++;
+                timer = 0.0f;
+            }
+        }
+
+        void Draw() const {
+            DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
+            DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
+        }
+
+        void Reset() {
+            displayText.clear();
             timer = 0.0f;
+            index = 0;
         }
-    }
+    };
 
-    void Draw() const {
-        DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
-        DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
-    }
+    void BounceCollision(Rectangle wall) {
+        Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
 
-    void Reset() {
-        displayText.clear();
-        timer = 0.0f;
-        index = 0;
-    }
-};
+        if (CheckCollisionRecs(playerRect, wall)) {
+            float playerCenterX = playerRect.x + playerRect.width / 2.0f;
+            float playerCenterY = playerRect.y + playerRect.height / 2.0f;
+            float wallCenterX = wall.x + wall.width / 2.0f;
+            float wallCenterY = wall.y + wall.height / 2.0f;
 
-Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
+            float dx = playerCenterX - wallCenterX;
+            float dy = playerCenterY - wallCenterY;
 
-void BounceCollision(Rectangle wall) {
-    Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
+            float overlapX = (playerRect.width / 2.0f + wall.width / 2.0f) - fabsf(dx);
+            float overlapY = (playerRect.height / 2.0f + wall.height / 2.0f) - fabsf(dy);
 
-    if (CheckCollisionRecs(playerRect, wall)) {
-        float playerCenterX = playerRect.x + playerRect.width / 2.0f;
-        float playerCenterY = playerRect.y + playerRect.height / 2.0f;
-        float wallCenterX = wall.x + wall.width / 2.0f;
-        float wallCenterY = wall.y + wall.height / 2.0f;
-
-        float dx = playerCenterX - wallCenterX;
-        float dy = playerCenterY - wallCenterY;
-
-        float overlapX = (playerRect.width / 2.0f + wall.width / 2.0f) - fabsf(dx);
-        float overlapY = (playerRect.height / 2.0f + wall.height / 2.0f) - fabsf(dy);
-
-        if (overlapX < overlapY) {
-            if (dx > 0) Vec2_main_player.x += overlapX;
-            else        Vec2_main_player.x -= overlapX;
-            number_main_player_move_vel.x *= -0.9f;
-        } else {
-            if (dy > 0) Vec2_main_player.y += overlapY;
-            else        Vec2_main_player.y -= overlapY;
-            number_main_player_move_vel.y *= -0.9f;
-        }
-    }
-}
-
-void function_loadGame() {
-    std::ifstream file(path_save);
-    std::string line;
-
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        std::string key;
-        if (std::getline(iss, key, '=')) {
-            std::string valueStr;
-            if (std::getline(iss, valueStr)) {
-                int value = std::stoi(valueStr);
-                if (key == "x") Vec2_main_player.x = value;
-                else if (key == "y") Vec2_main_player.y = value;
+            if (overlapX < overlapY) {
+                if (dx > 0) Vec2_main_player.x += overlapX;
+                else Vec2_main_player.x -= overlapX;
+                number_main_player_move_vel.x *= -0.9f;
+            } else {
+                if (dy > 0) Vec2_main_player.y += overlapY;
+                else Vec2_main_player.y -= overlapY;
+                number_main_player_move_vel.y *= -0.9f;
             }
         }
     }
-}
 
-void function_saveGame() {
-    std::ofstream file(path_save);
-    if (!file) {
-        throw std::runtime_error("Failed to open file for writing: " + path_save.string());
+    void function_loadGame() {
+        std::ifstream file(path_save);
+        std::string line;
+
+        while (std::getline(file, line)) {
+            std::istringstream iss(line);
+            std::string key;
+            if (std::getline(iss, key, '=')) {
+                std::string valueStr;
+                if (std::getline(iss, valueStr)) {
+                    int value = std::stoi(valueStr);
+                    if (key == "x") Vec2_main_player.x = value;
+                    else if (key == "y") Vec2_main_player.y = value;
+                }
+            }
+        }
     }
 
-    file << "x=" << Vec2_main_player.x << '\n';
-    file << "y=" << Vec2_main_player.y << '\n';
+    void function_saveGame() {
+        std::ofstream file(path_save);
+        if (!file) {
+            throw std::runtime_error("Failed to open file for writing: " + path_save.string());
+        }
+
+        file << "x=" << Vec2_main_player.x << '\n';
+        file << "y=" << Vec2_main_player.y << '\n';
+    }
+
+    float function_random_float(float min, float max) {
+        std::uniform_real_distribution<float> dist(min, max);
+        return dist(rng);
+    }
+
+    int function_random_int(int min, int max) {
+        std::uniform_int_distribution<int> dist(min, max);
+        return dist(rng);
+    }
+
+    void function_set_music(Music music, const char* path, float volume, float pitch, float pan) {
+        music = LoadMusicStream(path);
+        SetMusicVolume(music, volume);
+        SetMusicPitch(music, pitch);
+        SetMusicPan(music, pan);
+    }
+
+    void function_set_sound(Sound sound, const char* path, float volume, float pitch, float pan) {
+        sound = LoadSound(path);
+        SetSoundVolume(sound, volume);
+        SetSoundPitch(sound, pitch);
+        SetSoundPan(sound, pan);
+    }
 }
+
+HamsterCrab::Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
 
 void function_function_title() {
     if (rect_title_mouse.y <= 345) {
@@ -203,10 +235,10 @@ void function_main() {
     Vec2_main_player.x += number_main_player_move_vel.x * GetFrameTime();
     Vec2_main_player.y += number_main_player_move_vel.y * GetFrameTime();
 
-    BounceCollision(rect_main_map_obj_1);
-    BounceCollision(rect_main_map_obj_2);
-    BounceCollision(rect_main_map_obj_3);
-    BounceCollision(rect_main_map_obj_4);
+    HamsterCrab::BounceCollision(rect_main_map_obj_1);
+    HamsterCrab::BounceCollision(rect_main_map_obj_2);
+    HamsterCrab::BounceCollision(rect_main_map_obj_3);
+    HamsterCrab::BounceCollision(rect_main_map_obj_4);
 
     camera_main.target = Vec2_main_player;
 
@@ -245,6 +277,7 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "Hamster-crab's Game engine");
     SetExitKey(KEY_NULL);
+    InitAudioDevice();
 
     target = LoadRenderTexture(screenWidth, screenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
@@ -262,13 +295,15 @@ int main() {
     rect_title_mouse = {295, 345, 205, 60};
     Vec2_main_player = {0, 0};
 
+    music_volume_min = 1.0f;
+
     bool_force_exit = false;
 
     font_Japanese = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
     SetTextureFilter(font_Japanese.texture, TEXTURE_FILTER_BILINEAR);
 
     path_save = "../data/save.hc";
-    function_loadGame();
+    HamsterCrab::function_loadGame();
 
     SetTargetFPS(120);
 
@@ -332,6 +367,7 @@ int main() {
 
     UnloadFont(font_Japanese);
 
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;
