@@ -51,13 +51,15 @@ namespace HamsterCrab {
         std::string displayText;
         float timer = 0.0f;
         int index = 0;
-        float speed = 0.05f;
+        float speed = 0.006f;
         int x = 0, y = 0;
         int fontSize = 20;
+        bool drawtf = false;
+        bool background = false;
         Color color = BLACK;
 
-        Typewriter(std::string text, int px, int py, float spd = 0.05f, int size = 20, Color col = BLACK)
-        : fullText(text), x(px), y(py), speed(spd), fontSize(size), color(col) {}
+        Typewriter(std::string text, int px, int py, float spd = 0.05f, int size = 20, bool dtf = true, bool bgtf = true, Color col = BLACK)
+        : fullText(text), x(px), y(py), speed(spd), fontSize(size), drawtf(dtf), background(bgtf), color(col) {}
 
         void Update() {
             timer += GetFrameTime();
@@ -66,11 +68,22 @@ namespace HamsterCrab {
                 index++;
                 timer = 0.0f;
             }
+
+            if (IsKeyPressed(KEY_Z)) {
+                if (displayText == fullText) {
+                    drawtf = false;
+                }
+            }
         }
 
         void Draw() const {
-            DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
-            DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
+            if (drawtf) {
+                if (background) {
+                    DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
+                }
+
+                DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
+            }
         }
 
         void Reset() {
@@ -160,7 +173,7 @@ namespace HamsterCrab {
     }
 }
 
-HamsterCrab::Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.01f, 40, {255, 255, 255, 255});
+HamsterCrab::Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.006f, 40, true, true, {255, 255, 255, 255});
 
 void function_function_title() {
     if (rect_title_mouse.y <= 345) {
@@ -299,7 +312,7 @@ int main() {
 
     bool_force_exit = false;
 
-    font_Japanese = LoadFont("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf");
+    font_Japanese = LoadFontEx("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf", 64, 0, 250);
     SetTextureFilter(font_Japanese.texture, TEXTURE_FILTER_BILINEAR);
 
     path_save = "../data/save.hc";
