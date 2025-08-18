@@ -74,6 +74,11 @@ namespace HamsterCrab {
                     drawtf = false;
                 }
             }
+
+            if (drawtf) {
+                number_main_player_move_meter = false;
+                number_main_player_move_vel = {0.0f, 0.0f};
+            }
         }
 
         void Draw() const {
@@ -245,17 +250,17 @@ void function_main() {
         string_main_player_move_direction = "right";
     }
 
-    Vec2_main_player.x += number_main_player_move_vel.x * GetFrameTime();
-    Vec2_main_player.y += number_main_player_move_vel.y * GetFrameTime();
-
     HamsterCrab::function_BounceCollision(rect_main_map_obj_1);
     HamsterCrab::function_BounceCollision(rect_main_map_obj_2);
     HamsterCrab::function_BounceCollision(rect_main_map_obj_3);
     HamsterCrab::function_BounceCollision(rect_main_map_obj_4);
 
-    camera_main.target = Vec2_main_player;
-
     twText_1.Update();
+
+    Vec2_main_player.x += number_main_player_move_vel.x * GetFrameTime();
+    Vec2_main_player.y += number_main_player_move_vel.y * GetFrameTime();
+
+    camera_main.target = Vec2_main_player;
 
     BeginTextureMode(target);
     ClearBackground({30, 52, 93, 255});
