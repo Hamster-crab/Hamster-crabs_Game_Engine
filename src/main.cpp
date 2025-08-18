@@ -93,7 +93,7 @@ namespace HamsterCrab {
         }
     };
 
-    void BounceCollision(Rectangle wall) {
+    void function_BounceCollision(Rectangle wall) {
         Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
 
         if (CheckCollisionRecs(playerRect, wall)) {
@@ -248,10 +248,10 @@ void function_main() {
     Vec2_main_player.x += number_main_player_move_vel.x * GetFrameTime();
     Vec2_main_player.y += number_main_player_move_vel.y * GetFrameTime();
 
-    HamsterCrab::BounceCollision(rect_main_map_obj_1);
-    HamsterCrab::BounceCollision(rect_main_map_obj_2);
-    HamsterCrab::BounceCollision(rect_main_map_obj_3);
-    HamsterCrab::BounceCollision(rect_main_map_obj_4);
+    HamsterCrab::function_BounceCollision(rect_main_map_obj_1);
+    HamsterCrab::function_BounceCollision(rect_main_map_obj_2);
+    HamsterCrab::function_BounceCollision(rect_main_map_obj_3);
+    HamsterCrab::function_BounceCollision(rect_main_map_obj_4);
 
     camera_main.target = Vec2_main_player;
 
