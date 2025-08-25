@@ -150,6 +150,56 @@ namespace HamsterCrab {
         SetSoundPitch(sound, pitch);
         SetSoundPan(sound, pan);
     }
+
+    bool CheckCollisionOBB(Rectangle rec1, Vector2 origin1, float rot1, Rectangle rec2, Vector2 origin2, float rot2) {
+        auto getVertices = [](Rectangle rec, Vector2 origin, float rotation, Vector2 out[4]) {
+            Vector2 center = {rec.x + origin.x, rec.y + origin.y};
+            Vector2 local[4] = {
+                {rec.x, rec.y}, {rec.x + rec.width, rec.y},
+                {rec.x + rec.width, rec.y + rec.height}, {rec.x, rec.y + rec.height}
+            };
+            float s = sinf(rotation * DEG2RAD);
+            float c = cosf(rotation * DEG2RAD);
+            for (int i = 0; i < 4; i++) {
+                float dx = local[i].x - center.x;
+                float dy = local[i].y - center.y;
+                out[i].x = dx * c - dy * s + center.x;
+                out[i].y = dx * s + dy * c + center.y;
+            }
+        };
+
+        auto project = [](Vector2* verts, int count, Vector2 axis, float& min, float& max) {
+            min = max = verts[0].x * axis.x + verts[0].y * axis.y;
+            for (int i = 1; i < count; i++) {
+                float p = verts[i].x * axis.x + verts[i].y * axis.y;
+                if (p < min) min = p;
+                if (p > max) max = p;
+            }
+        };
+
+        auto overlap = [&](Vector2* verts1, Vector2* verts2) {
+            for (int i = 0; i < 4; i++) {
+                Vector2 p1 = verts1[i];
+                Vector2 p2 = verts1[(i+1)%4];
+                Vector2 axis = {p2.y - p1.y, -(p2.x - p1.x)}; // 法線ベクトル
+                float len = sqrtf(axis.x * axis.x + axis.y * axis.y);
+                axis.x /= len; axis.y /= len;
+
+                float min1, max1, min2, max2;
+                project(verts1, 4, axis, min1, max1);
+                project(verts2, 4, axis, min2, max2);
+
+                if (max1 < min2 || max2 < min1) return false; // 分離している
+            }
+            return true;
+        };
+
+        Vector2 verts1[4], verts2[4];
+        getVertices(rec1, origin1, rot1, verts1);
+        getVertices(rec2, origin2, rot2, verts2);
+
+        return overlap(verts1, verts2) && overlap(verts2, verts1);
+    }
 }
 
 #endif
