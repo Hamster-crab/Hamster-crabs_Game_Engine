@@ -1,6 +1,6 @@
 #include "raylib.h"
-#include "undertale.hpp"
-#include "helper.hpp"
+#include "Hamster-crab/undertale.hpp"
+#include "Hamster-crab/helper.hpp"
 #include <iostream>
 #include <cmath>
 #include <string>

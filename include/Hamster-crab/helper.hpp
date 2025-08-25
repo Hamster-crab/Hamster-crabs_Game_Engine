@@ -1,3 +1,6 @@
+#ifndef HELPER_HPP
+#define HELPER_HPP
+
 #include "raylib.h"
 #include <random>
 #include <filesystem>
@@ -148,3 +151,5 @@ namespace HamsterCrab {
         SetSoundPan(sound, pan);
     }
 }
+
+#endif
