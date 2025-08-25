@@ -1,13 +1,9 @@
 #include "raylib.h"
-#include "undertale.h"
+#include "undertale.hpp"
+#include "helper.hpp"
 #include <iostream>
 #include <cmath>
 #include <string>
-#include <filesystem>
-#include <fstream>
-#include <random>
-
-std::mt19937 rng((unsigned)time(NULL));
 
 int screenWidth;
 int screenHeight;
@@ -36,145 +32,11 @@ Font font_Japanese;
 
 bool bool_force_exit;
 
-std::filesystem::path path_save;
-
 float music_volume_min;
 
-// const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
+const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
 
-namespace HamsterCrab {
-    class Typewriter {
-    public:
-        std::string fullText;
-        std::string displayText;
-        float timer = 0.0f;
-        int index = 0;
-        float speed = 0.006f;
-        int x = 0, y = 0;
-        int fontSize = 20;
-        bool drawtf = false;
-        bool background = false;
-        Color color = BLACK;
-
-        Typewriter(std::string text, int px, int py, float spd = 0.05f, int size = 20, bool dtf = true, bool bgtf = true, Color col = BLACK)
-        : fullText(text), x(px), y(py), speed(spd), fontSize(size), drawtf(dtf), background(bgtf), color(col) {}
-
-        void Update() {
-            timer += GetFrameTime();
-            if (index < (int)fullText.size() && timer >= speed) {
-                displayText += fullText[index];
-                index++;
-                timer = 0.0f;
-            }
-
-            if (IsKeyPressed(KEY_Z)) {
-                if (displayText == fullText) {
-                    drawtf = false;
-                }
-            }
-
-            if (drawtf) {
-                number_main_player_move_meter = false;
-                number_main_player_move_vel = {0.0f, 0.0f};
-            }
-        }
-
-        void Draw() const {
-            if (drawtf) {
-                if (background) {
-                    DrawRectangle(0, 430, 800, 230, {30, 30, 30, 255});
-                }
-
-                DrawTextEx(font_Japanese, displayText.c_str(), {(float)x, (float)y}, fontSize, 3.0f, color);
-            }
-        }
-
-        void Reset() {
-            displayText.clear();
-            timer = 0.0f;
-            index = 0;
-        }
-    };
-
-    void function_BounceCollision(Rectangle wall) {
-        Rectangle playerRect = {Vec2_main_player.x, Vec2_main_player.y, 60, 120};
-
-        if (CheckCollisionRecs(playerRect, wall)) {
-            float playerCenterX = playerRect.x + playerRect.width / 2.0f;
-            float playerCenterY = playerRect.y + playerRect.height / 2.0f;
-            float wallCenterX = wall.x + wall.width / 2.0f;
-            float wallCenterY = wall.y + wall.height / 2.0f;
-
-            float dx = playerCenterX - wallCenterX;
-            float dy = playerCenterY - wallCenterY;
-
-            float overlapX = (playerRect.width / 2.0f + wall.width / 2.0f) - fabsf(dx);
-            float overlapY = (playerRect.height / 2.0f + wall.height / 2.0f) - fabsf(dy);
-
-            if (overlapX < overlapY) {
-                if (dx > 0) Vec2_main_player.x += overlapX;
-                else Vec2_main_player.x -= overlapX;
-                number_main_player_move_vel.x *= -0.9f;
-            } else {
-                if (dy > 0) Vec2_main_player.y += overlapY;
-                else Vec2_main_player.y -= overlapY;
-                number_main_player_move_vel.y *= -0.9f;
-            }
-        }
-    }
-
-    void function_loadGame() {
-        std::ifstream file(path_save);
-        std::string line;
-
-        while (std::getline(file, line)) {
-            std::istringstream iss(line);
-            std::string key;
-            if (std::getline(iss, key, '=')) {
-                std::string valueStr;
-                if (std::getline(iss, valueStr)) {
-                    int value = std::stoi(valueStr);
-                    if (key == "x") Vec2_main_player.x = value;
-                    else if (key == "y") Vec2_main_player.y = value;
-                }
-            }
-        }
-    }
-
-    void function_saveGame() {
-        std::ofstream file(path_save);
-        if (!file) {
-            throw std::runtime_error("Failed to open file for writing: " + path_save.string());
-        }
-
-        file << "x=" << Vec2_main_player.x << '\n';
-        file << "y=" << Vec2_main_player.y << '\n';
-    }
-
-    float function_random_float(float min, float max) {
-        std::uniform_real_distribution<float> dist(min, max);
-        return dist(rng);
-    }
-
-    int function_random_int(int min, int max) {
-        std::uniform_int_distribution<int> dist(min, max);
-        return dist(rng);
-    }
-
-    void function_set_music(Music music, const char* path, float volume, float pitch, float pan) {
-        music = LoadMusicStream(path);
-        SetMusicVolume(music, volume);
-        SetMusicPitch(music, pitch);
-        SetMusicPan(music, pan);
-    }
-
-    void function_set_sound(Sound sound, const char* path, float volume, float pitch, float pan) {
-        sound = LoadSound(path);
-        SetSoundVolume(sound, volume);
-        SetSoundPitch(sound, pitch);
-        SetSoundPan(sound, pan);
-    }
-}
+namespace HamsterCrab {}
 
 HamsterCrab::Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.006f, 40, true, true, {255, 255, 255, 255});
 
@@ -248,29 +110,29 @@ void function_main() {
         string_main_player_move_direction = "right";
     }
 
-    // HamsterCrab::function_BounceCollision(rect_main_map_obj_1);
+    HamsterCrab::function_BounceCollision(Vec2_main_player, number_main_player_move_vel, rect_main_map_obj_1);
 
-    twText_1.Update();
+    twText_1.Update(number_main_player_move_meter, number_main_player_move_vel);
 
     Vec2_main_player.x += number_main_player_move_vel.x * GetFrameTime();
     Vec2_main_player.y += number_main_player_move_vel.y * GetFrameTime();
 
     camera_main.target = Vec2_main_player;
 
-    // BeginTextureMode(target);
-    // ClearBackground({30, 52, 93, 255});
-    // BeginMode2D(camera_main);
-
-    // DrawRectangleRec(rect_main_map_obj_1, {255, 0, 0, 255});
-
-    // DrawRectangleV(Vec2_main_player, {60, 120}, {255, 0, 0, 255});
-
-    // EndMode2D();
-
     BeginTextureMode(target);
     ClearBackground({30, 52, 93, 255});
+    BeginMode2D(camera_main);
 
-    HamsterCrab::undertale::draw_frame();
+    DrawRectangleRec(rect_main_map_obj_1, {255, 0, 0, 255});
+
+    DrawRectangleV(Vec2_main_player, {60, 120}, {255, 0, 0, 255});
+
+    EndMode2D();
+
+    // BeginTextureMode(target);
+    // ClearBackground({30, 52, 93, 255});
+
+    // HamsterCrab::undertale::draw_frame();
 
     twText_1.Draw();
     if (number_main_player_move_meter) {
@@ -322,8 +184,9 @@ int main() {
     font_Japanese = LoadFontEx("../fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf", 64, 0, 250);
     SetTextureFilter(font_Japanese.texture, TEXTURE_FILTER_BILINEAR);
 
-    path_save = "../data/save.hc";
-    HamsterCrab::function_loadGame();
+    twText_1.Setup(font_Japanese);
+
+    HamsterCrab::function_loadGame(Vec2_main_player);
 
     SetTargetFPS(120);
 
