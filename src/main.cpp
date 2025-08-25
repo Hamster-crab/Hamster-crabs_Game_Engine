@@ -36,8 +36,6 @@ float music_volume_min;
 
 const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
 
-namespace HamsterCrab {}
-
 HamsterCrab::Typewriter twText_1("Press the arrow keys.\nEach press moves you one space.\nBTW, you can run by pressing the E key.\nPress ESC key is exit.", 130, 430, 0.006f, 40, true, true, {255, 255, 255, 255});
 
 void function_function_title() {
