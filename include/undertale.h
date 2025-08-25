@@ -3,64 +3,55 @@
 struct Bullet {
     float x, y;
     float dx, dy;
+    float dx_start, dy_start;
     float rotation;
-    float d_rotation;
+    float dr;
+    float dr_start;
+    Vector2 origin;
     int width, height;
     bool active;
+    float timer;
     int type;
 
-    BulletPro()
-    : x(0), y(0), dx(0), dy(0), width(0), height(0), active(false) {}
+    Bullet()
+    : x(0), y(0), dx(0), dy(0), dx_start(0), dy_start(0), rotation(0), dr(0), dr_start(0), origin{0.0f, 0.0f}, width(0), height(0), active(false), timer(0), type(0) {}
 
-    void initialize(float startX, float startY, float speedX, float speedY, int w, int h, int t) {
+    void initialize(float startX, float startY, float speedX, float speedY, float StartTimeX, float StartTimeY, float rota, float speedRota, float StartTimerRota, Vector2 o, int w, int h, int t) {
         x = startX;
         y = startY;
         dx = speedX;
         dy = speedY;
+        dx_start = StartTimeX;
+        dy_start = StartTimeY;
+        rotation = rota;
+        dr = speedRota;
+        dr_start = StartTimerRota;
+        origin = o;
         width = w;
         height = h;
         active = true;
+        timer = 0.0f;
         type = t;
     }
 
     void reset() {
-        x = y = dx = dy = 0.0f;
+        x = y = dx = dy = dx_start = dy_start = 0.0f;
+        rotation = dr = dr_start = 0.0f;
+        origin = {0.0f, 0.0f};
         width = height = 0;
         active = false;
+        timer = 0.0f;
     }
 
     void update() {
         if (!active) return;
         x += dx * GetFrameTime();
         y += dy * GetFrameTime();
-        if (x < -width || x > 800 || y < -height || y > 600) {
-            active = false;
-        }
     }
 
     void draw() const {
         if (active) {
-            if (type == 1) {
-                DrawRectangle((int)x, (int)y, width, height, {255, 255, 255, 255});
-            }
-
-            if (type == 2) {
-                DrawRectangle((int)x, (int)y, width, height, {0, 0, 255, 255});
-            }
-
-            if (type == 3) {
-                DrawRectangle((int)x, (int)y, width, height, {255, 255, 0, 255});
-            }
-
-            if (type == 4) {
-                DrawTexture(texture_bullet_fire, (int)x, (int)y, {255, 255, 255, 255});
-            }
-
-            if (type == 5) {}
-
-            if (type == 6) {
-                DrawRectangle((int)x, (int)y, width, height, {255, 255, 255, 255});
-            }
+            DrawRectangle((int)x, (int)y, width, height, {255, 255, 255, 255});
         }
     }
 };
