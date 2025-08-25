@@ -1,5 +1,6 @@
 #include "raylib.h"
-# include <iostream>
+#include "undertale.h"
+#include <iostream>
 #include <cmath>
 #include <string>
 #include <filesystem>
@@ -39,10 +40,7 @@ std::filesystem::path path_save;
 
 float music_volume_min;
 
-const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
-const Rectangle rect_main_map_obj_2 = {-300, -300, 5, 1080};
-const Rectangle rect_main_map_obj_3 = {-300, 780, 1280, 5};
-const Rectangle rect_main_map_obj_4 = {980, -300, 5, 1080};
+// const Rectangle rect_main_map_obj_1 = {-300, -800, 1280, 505};
 
 namespace HamsterCrab {
     class Typewriter {
@@ -250,10 +248,7 @@ void function_main() {
         string_main_player_move_direction = "right";
     }
 
-    HamsterCrab::function_BounceCollision(rect_main_map_obj_1);
-    HamsterCrab::function_BounceCollision(rect_main_map_obj_2);
-    HamsterCrab::function_BounceCollision(rect_main_map_obj_3);
-    HamsterCrab::function_BounceCollision(rect_main_map_obj_4);
+    // HamsterCrab::function_BounceCollision(rect_main_map_obj_1);
 
     twText_1.Update();
 
@@ -262,18 +257,20 @@ void function_main() {
 
     camera_main.target = Vec2_main_player;
 
+    // BeginTextureMode(target);
+    // ClearBackground({30, 52, 93, 255});
+    // BeginMode2D(camera_main);
+
+    // DrawRectangleRec(rect_main_map_obj_1, {255, 0, 0, 255});
+
+    // DrawRectangleV(Vec2_main_player, {60, 120}, {255, 0, 0, 255});
+
+    // EndMode2D();
+
     BeginTextureMode(target);
     ClearBackground({30, 52, 93, 255});
-    BeginMode2D(camera_main);
 
-    DrawRectangleRec(rect_main_map_obj_1, {255, 0, 0, 255});
-    DrawRectangleRec(rect_main_map_obj_2, {255, 0, 0, 255});
-    DrawRectangleRec(rect_main_map_obj_3, {255, 0, 0, 255});
-    DrawRectangleRec(rect_main_map_obj_4, {255, 0, 0, 255});
-
-    DrawRectangleV(Vec2_main_player, {60, 120}, {255, 0, 0, 255});
-
-    EndMode2D();
+    HamsterCrab::undertale::draw_frame();
 
     twText_1.Draw();
     if (number_main_player_move_meter) {
